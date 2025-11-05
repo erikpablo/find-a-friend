@@ -1,8 +1,10 @@
 import { OrgAddressesRepository } from '@/repositories/org-addresses-repository'
 import { OrgsRepository } from '@/repositories/orgs-repository'
-import { PASSWORD_ROUNDS } from '@/utils/constants'
+import { PASSWORD_ROUNDS } from '@/shared/utils/constants'
 import { Org } from '@prisma/client'
 import { hash } from 'bcryptjs'
+import { OrgWithEmailAlreadyExistsError } from './errors/org-with-email-already-exists-error'
+import { OrgWithNameAlreadyExistsError } from './errors/org-with-name-already-exists-error'
 
 interface CreateOrgUseCaseRequest {
   owner: string
@@ -45,11 +47,11 @@ export class CreateOrgUseCase {
       userWithSameEmail &&
       userWithSameEmail.orgName.toLowerCase() === orgName.toLowerCase()
     ) {
-      throw new Error(`Org already exists`)
+      throw new OrgWithNameAlreadyExistsError()
     }
 
     if (userWithSameEmail) {
-      throw new Error(`Org with this email already exists`)
+      throw new OrgWithEmailAlreadyExistsError()
     }
 
     const passwordHash = await hash(password, PASSWORD_ROUNDS)
