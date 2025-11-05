@@ -6,7 +6,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3333),
   HOST: z.string().default('0.0.0.0'),
   JWT_SECRET: z.string(),
-  DATABASE_URL: z.url().startsWith('postgres://'),
+  DATABASE_URL: z.url(),
 })
 
 const _env = envSchema.safeParse(process.env)
