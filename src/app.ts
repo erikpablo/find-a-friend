@@ -4,8 +4,16 @@ import z, { ZodError } from 'zod'
 import { env } from './env'
 import { AppException } from './shared/errors/app-exception'
 import { ErrorsCode } from './shared/errors/errors-code'
+import fastifyJwt from '@fastify/jwt'
 
 export const app = fastify()
+
+app.register(fastifyJwt, {
+  secret: env.JWT_SECRET,
+  sign: {
+    expiresIn: '10m',
+  },
+})
 
 app.register(orgsRoutes)
 
