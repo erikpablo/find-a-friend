@@ -1,21 +1,58 @@
-import type { Prisma, Pet } from '@prisma/client'
-import type { PetsRepository } from '../pets-repository'
 import { prisma } from '@/lib/prisma'
+import type { Pet, Prisma } from '@/prisma-client'
+import type { FindPetsParams, PetsRepository } from '../pets-repository'
 
-export class PrismaPetRepository implements PetsRepository {
+export class PrismaPetsRepository implements PetsRepository {
+  async create(data: Prisma.PetUncheckedCreateInput): Promise<Pet> {
+    const pet = await prisma.pet.create({ data })
+
+    return pet
+  }
+
   async findByName(name: string): Promise<Pet | null> {
-    const pet = prisma.pet.findFirst({
+    const pet = await prisma.pet.findFirst({
       where: {
-        name,
+        name: name,
       },
     })
 
     return pet
   }
 
-  async create(data: Prisma.PetUncheckedCreateInput): Promise<Pet> {
-    const pet = await prisma.pet.create({
-      data,
+  async find({
+    age,
+    city,
+    description,
+    levelEnergy,
+    levelIndependency,
+    size,
+  }: FindPetsParams): Promise<Pet[]> {
+    const pets = await prisma.pet.findMany({
+      where: {
+        adopted: false,
+        age,
+        description,
+        levelEnergy,
+        levelIndependency,
+        size,
+        orgAddress: {
+          city,
+        },
+      },
+    })
+
+    return pets
+  }
+
+  async findById(petId: string): Promise<Pet | null> {
+    const pet = await prisma.pet.findUnique({
+      where: {
+        id: petId,
+      },
+      include: {
+        org: true,
+        orgAddress: true,
+      },
     })
 
     return pet

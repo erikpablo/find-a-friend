@@ -1,7 +1,7 @@
 import { OrgAddressesRepository } from '@/repositories/org-addresses-repository'
 import { OrgsRepository } from '@/repositories/orgs-repository'
 import { PASSWORD_ROUNDS } from '@/shared/utils/constants'
-import { Org } from '@prisma/client'
+import { Org } from '@/prisma-client'
 import { hash } from 'bcryptjs'
 import { OrgWithEmailAlreadyExistsError } from './errors/org-with-email-already-exists-error'
 import { OrgWithNameAlreadyExistsError } from './errors/org-with-name-already-exists-error'
