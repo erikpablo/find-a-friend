@@ -32,6 +32,8 @@ model OrgAddress {
   state        String
   cep          String
   complement   String?
+  latitude     Decimal
+  longitude    Decimal
 
   org   Org    @relation(fields: [orgId], references: [id])
   orgId String @map("org_id")
@@ -77,17 +79,14 @@ model Pet {
   levelIndependency    LevelIndependency @map("level_independency")
   environmentType      String            @map("environment_type")
   size                 PetSize
-  latitude             Decimal
-  longitude            Decimal
   adoptionRequirements String            @map("adoption_requirements")
   adopted              Boolean           @default(false)
   createdAt            DateTime          @default(now()) @map("created_at")
   updatedAt            DateTime?         @updatedAt @map("updated_at")
 
-  org         Org          @relation(fields: [orgId], references: [id])
-  orgId       String       @map("org_id")
-  pet_images  PetImages[]
-  new_fathers NewFathers[]
+  org        Org         @relation(fields: [orgId], references: [id])
+  orgId      String      @map("org_id")
+  pet_images PetImages[]
 
   orgAddress   OrgAddress @relation(fields: [orgAddressId], references: [id])
   orgAddressId String     @map("org_address_id")
@@ -106,16 +105,4 @@ model PetImages {
   petId String @map("pet_id")
 
   @@map("pet_images")
-}
-
-model NewFathers {
-  id    String @id @default(uuid())
-  name  String
-  email String @unique
-  phone String
-
-  pet   Pet    @relation(fields: [petId], references: [id])
-  petId String @map("pet_id")
-
-  @@map("new_fathers")
 }
