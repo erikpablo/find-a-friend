@@ -18,8 +18,6 @@ interface CreatePetUseCaseRequest {
   levelIndependency: LevelIndependency
   environmentType: string
   size: PetSize
-  latitude: number
-  longitude: number
   adoptionRequirements: string
 }
 
@@ -40,8 +38,6 @@ export class CreatePetUseCase {
     levelIndependency,
     environmentType,
     size,
-    latitude,
-    longitude,
     adoptionRequirements,
   }: CreatePetUseCaseRequest): Promise<CreatePetUseCaseResponse> {
     const petAlreadyExist = await this.petsRepository.findByName(name)
@@ -60,8 +56,6 @@ export class CreatePetUseCase {
       levelIndependency,
       environmentType,
       size,
-      latitude,
-      longitude,
       adoptionRequirements,
     })
 
