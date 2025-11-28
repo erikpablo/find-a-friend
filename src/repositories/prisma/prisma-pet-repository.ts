@@ -39,6 +39,9 @@ export class PrismaPetsRepository implements PetsRepository {
           city,
         },
       },
+      include: {
+        pet_images: true,
+      },
     })
 
     return pets
@@ -52,6 +55,7 @@ export class PrismaPetsRepository implements PetsRepository {
       include: {
         org: true,
         orgAddress: true,
+        pet_images: true,
       },
     })
 

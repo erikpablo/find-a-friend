@@ -1,3 +1,4 @@
+import { PresenterOrgMapper } from '@/http/presenters/org.presenter'
 import { makeFetchNearbyOrgsUseCase } from '@/use-case/factories/make-fetch-nearby-orgs-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import z from 'zod'
@@ -17,11 +18,13 @@ export async function nearby(request: FastifyRequest, reply: FastifyReply) {
 
   const fetchNearbyOrgUseCase = makeFetchNearbyOrgsUseCase()
 
-  const { orgs } = await fetchNearbyOrgUseCase.execute({
+  const result = await fetchNearbyOrgUseCase.execute({
     userLatitude: latitude,
     userLongitude: longitude,
     page,
   })
 
-  return reply.status(200).send({ orgs })
+  const orgs = result.orgs.map(PresenterOrgMapper.toHTTP)
+
+  return reply.status(200).send({ orgs: result.orgs })
 }
