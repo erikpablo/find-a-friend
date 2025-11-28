@@ -1,3 +1,7 @@
+import {
+  PresenterPetDetailsMapper,
+  type PrismaPetDetailsWithRelations,
+} from '@/http/presenters/pet-details.presenter'
 import { makeGetPetByIdUseCase } from '@/use-case/factories/make-get-pet-by-id-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import z from 'zod'
@@ -11,7 +15,11 @@ export async function getPetById(request: FastifyRequest, reply: FastifyReply) {
 
   const getPetByIdUseCase = makeGetPetByIdUseCase()
 
-  const pet = await getPetByIdUseCase.execute({ petId })
+  const result = await getPetByIdUseCase.execute({ petId })
+
+  const pet = PresenterPetDetailsMapper.toHTTP(
+    result.pet as unknown as PrismaPetDetailsWithRelations
+  )
 
   return reply.status(200).send(pet)
 }

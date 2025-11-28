@@ -1,4 +1,8 @@
 import {
+  PresenterFetchPetMapper,
+  type PrismaFetchPetWithRelations,
+} from '@/http/presenters/fetch-pet.presenter'
+import {
   LevelEnergy,
   LevelIndependency,
   PetAge,
@@ -23,12 +27,18 @@ export async function fetch(request: FastifyRequest, reply: FastifyReply) {
 
   const createPetUseCase = makeFetchPetsUseCase()
 
-  const pets = await createPetUseCase.execute({
+  const results = await createPetUseCase.execute({
     city,
     age,
     levelEnergy,
     levelIndependency,
     size,
+  })
+
+  const pets = results.pets.map((pet) => {
+    return PresenterFetchPetMapper.toHTTP(
+      pet as unknown as PrismaFetchPetWithRelations
+    )
   })
 
   return reply.status(200).send(pets)

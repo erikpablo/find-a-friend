@@ -6,6 +6,9 @@ import { AppException } from './shared/errors/app-exception'
 import { ErrorsCode } from './shared/errors/errors-code'
 import fastifyJwt from '@fastify/jwt'
 import { petsRoute } from './http/controllers/pet/routes'
+import fastifyMultipart from '@fastify/multipart'
+import fastifyStatic from '@fastify/static'
+import storage from './config/storage'
 
 export const app = fastify()
 
@@ -14,6 +17,12 @@ app.register(fastifyJwt, {
   sign: {
     expiresIn: '10m',
   },
+})
+
+app.register(fastifyMultipart)
+app.register(fastifyStatic, {
+  root: storage.resolvePetImagePath,
+  prefix: '/images/',
 })
 
 app.register(orgsRoutes)

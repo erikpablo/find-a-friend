@@ -1,18 +1,16 @@
-import { Org, Prisma } from '@/prisma-client'
-import { OrgsRepository, type FindManyNearbyParams } from '../orgs-repository'
+import type { Org, Prisma } from '@/prisma-client'
+import type { FindManyNearbyParams, OrgsRepository } from '../orgs-repository'
 import { prisma } from '@/lib/prisma'
 
 export class PrismaOrgsRepository implements OrgsRepository {
   async create(data: Prisma.OrgCreateInput): Promise<Org> {
-    const org = await prisma.org.create({
-      data,
-    })
+    const org = await prisma.org.create({ data })
 
     return org
   }
 
   async findByEmail(email: string): Promise<Org | null> {
-    const org = await prisma.org.findUnique({
+    const org = prisma.org.findUnique({
       where: {
         email,
       },
@@ -29,7 +27,13 @@ export class PrismaOrgsRepository implements OrgsRepository {
   }: FindManyNearbyParams): Promise<Org[]> {
     const orgs = await prisma.$queryRaw<Org[]>`
       SELECT
-        o.*
+        o.id,
+        o.owner,
+        o.org_name as orgName,
+        o.email,
+        o.phone,
+        o.created_at as createdAt,
+        o.updated_at as updatedAt
       FROM
         orgs AS o
       INNER JOIN org_address oa ON o.id = oa.org_id
